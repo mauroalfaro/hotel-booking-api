@@ -1,6 +1,7 @@
 package com.alfarosoft.hotelbooking.controller;
 
 import com.alfarosoft.hotelbooking.model.Booking;
+import com.alfarosoft.hotelbooking.model.Room;
 import com.alfarosoft.hotelbooking.service.BookingService;
 import com.alfarosoft.hotelbooking.service.CardEncrypterService;
 import com.alfarosoft.hotelbooking.service.CustomerService;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -32,10 +34,10 @@ public class HotelBookingController {
 
     @PostMapping(value = "/checkIn", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<Booking> addBooking (@RequestBody Booking booking){
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(null);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(bookingService.addBooking(booking));
     }
 
-    @PutMapping(value = "{bookingId}/checkOut", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/checkOut/{bookingId}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<Booking> closeBooking (@PathVariable String bookingId){
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(null);
     }
@@ -51,7 +53,17 @@ public class HotelBookingController {
     }
 
     @GetMapping(value = "/getBookings/{customerId}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Booking>> getAllBookingsByCustomerId (@PathVariable String customerid){
+    public ResponseEntity<List<Booking>> getBookingsByCustomerId (@PathVariable String customerid){
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping(value = "/getBookings/{date}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Booking>> getBookingsByDate (@PathVariable Date date){
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping(value = "/getAvailableRooms", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Room>> getAvailableRooms (){
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

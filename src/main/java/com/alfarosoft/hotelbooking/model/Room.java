@@ -15,10 +15,14 @@ public class Room {
     @JsonProperty("roomQualification")
     private RoomQualification roomQualification;
 
-    public Room(String roomNumber, Integer capacity, RoomQualification roomQualification) {
+    @JsonProperty("isAvailable")
+    private Boolean isAvailable;
+
+    public Room(String roomNumber, Integer capacity, RoomQualification roomQualification, Boolean isAvailable) {
         this.roomNumber = roomNumber;
         this.capacity = capacity;
         this.roomQualification = roomQualification;
+        this.isAvailable = isAvailable;
     }
 
     public String getRoomNumber() {
@@ -45,6 +49,14 @@ public class Room {
         this.roomQualification = roomQualification;
     }
 
+    public Boolean getAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(Boolean available) {
+        isAvailable = available;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -52,12 +64,13 @@ public class Room {
         Room room = (Room) o;
         return Objects.equals(roomNumber, room.roomNumber) &&
                 Objects.equals(capacity, room.capacity) &&
-                roomQualification == room.roomQualification;
+                roomQualification == room.roomQualification &&
+                Objects.equals(isAvailable, room.isAvailable);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(roomNumber, capacity, roomQualification);
+        return Objects.hash(roomNumber, capacity, roomQualification, isAvailable);
     }
 
     @Override
@@ -66,6 +79,7 @@ public class Room {
                 "roomNumber='" + roomNumber + '\'' +
                 ", capacity=" + capacity +
                 ", roomQualification=" + roomQualification +
+                ", isAvailable=" + isAvailable +
                 '}';
     }
 }
