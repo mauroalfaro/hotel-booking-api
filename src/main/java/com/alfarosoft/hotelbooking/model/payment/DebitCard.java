@@ -1,4 +1,9 @@
 package com.alfarosoft.hotelbooking.model.payment;
 
-public class DebitCard {
+import java.util.Date;
+
+public class DebitCard extends Card{
+    public DebitCard(String encryptedCardNumber, Date expirationDate, String cardEntity, String cardHolderName, String bank) {
+        super(encryptedCardNumber, expirationDate, cardEntity, cardHolderName, bank);
+    }
 }
