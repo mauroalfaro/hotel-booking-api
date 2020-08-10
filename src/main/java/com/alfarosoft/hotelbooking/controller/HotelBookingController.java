@@ -32,14 +32,19 @@ public class HotelBookingController {
         this.cardEncrypterService = cardEncrypterService;
     }
 
-    @PostMapping(value = "/checkIn", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/addBooking", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<Booking> addBooking (@RequestBody Booking booking){
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(bookingService.addBooking(booking));
     }
 
+    @PostMapping(value = "/checkIn/{bookingId}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<Booking> checkInBooking (@PathVariable String bookingId){
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(bookingService.checkingBooking(bookingId));
+    }
+
     @PutMapping(value = "/checkOut/{bookingId}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<Booking> closeBooking (@PathVariable String bookingId){
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(null);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(bookingService.checkoutBooking(bookingId));
     }
 
     @GetMapping(value = "/getBooking/{bookingId}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
@@ -49,7 +54,7 @@ public class HotelBookingController {
 
     @GetMapping(value = "/getBookings", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Booking>> getAllBookings (){
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(bookingService.getBookings());
     }
 
     @GetMapping(value = "/getBookings/{customerId}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)

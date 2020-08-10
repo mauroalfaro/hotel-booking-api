@@ -3,6 +3,7 @@ package com.alfarosoft.hotelbooking.model;
 import com.alfarosoft.hotelbooking.model.payment.PaymentAccount;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -24,10 +25,10 @@ public class Booking {
     private List<Room> rooms;
 
     @JsonProperty("checkInDate")
-    private Date checkInDate;
+    private LocalDate checkInDate;
 
     @JsonProperty("checkOutDate")
-    private Date checkOutDate;
+    private LocalDate checkOutDate;
 
     @JsonProperty("isActive")
     private Boolean isActive;
@@ -41,7 +42,7 @@ public class Booking {
     @JsonProperty("paymentAccount")
     private PaymentAccount paymentAccount;
 
-    public Booking(String bookingId, List<Customer> customers, List<Amenity> amenities, List<Activity> activities, List<Room> rooms, Date checkInDate, Date checkOutDate, Boolean isActive, Boolean isPayedFor, Double totalAmount, PaymentAccount paymentAccount) {
+    public Booking(String bookingId, List<Customer> customers, List<Amenity> amenities, List<Activity> activities, List<Room> rooms, LocalDate checkInDate, LocalDate checkOutDate, Boolean isActive, Boolean isPayedFor, Double totalAmount, PaymentAccount paymentAccount) {
         this.bookingId = bookingId;
         this.customers = customers;
         this.amenities = amenities;
@@ -95,19 +96,19 @@ public class Booking {
         this.rooms = rooms;
     }
 
-    public Date getCheckInDate() {
+    public LocalDate getCheckInDate() {
         return checkInDate;
     }
 
-    public void setCheckInDate(Date checkInDate) {
+    public void setCheckInDate(LocalDate checkInDate) {
         this.checkInDate = checkInDate;
     }
 
-    public Date getCheckOutDate() {
+    public LocalDate getCheckOutDate() {
         return checkOutDate;
     }
 
-    public void setCheckOutDate(Date checkOutDate) {
+    public void setCheckOutDate(LocalDate checkOutDate) {
         this.checkOutDate = checkOutDate;
     }
 

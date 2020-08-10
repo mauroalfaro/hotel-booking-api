@@ -13,4 +13,5 @@ public class CardEncrypterService {
         this.hibernateSessionFactory = hibernateSessionFactory;
         cardEncrypterSession = hibernateSessionFactory.buildSession();
     }
+
 }
