@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class PaymentAccount {
+    @JsonProperty("paymentAccountId")
+    private String paymentAccountId;
+
     @JsonProperty("customerId")
     private String customerId;
 
@@ -18,12 +21,22 @@ public class PaymentAccount {
     @JsonProperty("accountStatus")
     private AccountStatus accountStatus;
 
-    public PaymentAccount(String customerId, CreditCard creditCard, DebitCard debitCard, AccountStatus accountStatus) {
+    public PaymentAccount(String paymentAccountId, String customerId, CreditCard creditCard, DebitCard debitCard, AccountStatus accountStatus) {
+        this.paymentAccountId = paymentAccountId;
         this.customerId = customerId;
         this.creditCard = creditCard;
         this.debitCard = debitCard;
         this.accountStatus = accountStatus;
     }
+
+    public String getPaymentAccountId() {
+        return paymentAccountId;
+    }
+
+    public void setPaymentAccountId(String paymentAccountId) {
+        this.paymentAccountId = paymentAccountId;
+    }
+
 
     public String getCustomerId() {
         return customerId;
@@ -62,7 +75,8 @@ public class PaymentAccount {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PaymentAccount that = (PaymentAccount) o;
-        return Objects.equals(customerId, that.customerId) &&
+        return Objects.equals(paymentAccountId, that.paymentAccountId) &&
+                Objects.equals(customerId, that.customerId) &&
                 Objects.equals(creditCard, that.creditCard) &&
                 Objects.equals(debitCard, that.debitCard) &&
                 accountStatus == that.accountStatus;
@@ -70,13 +84,14 @@ public class PaymentAccount {
 
     @Override
     public int hashCode() {
-        return Objects.hash(customerId, creditCard, debitCard, accountStatus);
+        return Objects.hash(paymentAccountId, customerId, creditCard, debitCard, accountStatus);
     }
 
     @Override
     public String toString() {
         return "PaymentAccount{" +
-                "customerId='" + customerId + '\'' +
+                "paymentAccountId='" + paymentAccountId + '\'' +
+                ", customerId='" + customerId + '\'' +
                 ", creditCard=" + creditCard +
                 ", debitCard=" + debitCard +
                 ", accountStatus=" + accountStatus +

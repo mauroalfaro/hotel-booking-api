@@ -2,38 +2,54 @@ package com.alfarosoft.hotelbooking.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.Objects;
 
+@Entity
+@Table(name = "Customer")
 public class Customer {
     @JsonProperty("dni")
+    @Id
     private String dni;
 
     @JsonProperty("cuil")
+    @Column(name = "cuil")
     private String cuil;
 
     @JsonProperty("name")
+    @Column(name = "name")
     private String name;
 
     @JsonProperty("surname")
+    @Column(name = "surname")
     private String surname;
 
     @JsonProperty("lastName")
+    @Column(name = "lastName")
     private String lastName;
 
     @JsonProperty("birthDate")
+    @Column(name = "birthDate")
     private Date birthDate;
 
     @JsonProperty("dateRegistered")
+    @Column(name = "dateRegistered")
     private Date dateRegistered;
 
     @JsonProperty("phone")
+    @Column(name = "phone")
     private String phone;
 
     @JsonProperty("alternativePhone")
+    @Column(name = "alternativePhone")
     private String alternativePhone;
 
     @JsonProperty("paymentAccountId")
+    @Column(name = "paymentAccountId")
     private String paymentAccountId;
 
     public Customer(String dni, String cuil, String name, String surname, String lastName, Date birthDate, Date dateRegistered, String phone, String alternativePhone, String paymentAccountId) {

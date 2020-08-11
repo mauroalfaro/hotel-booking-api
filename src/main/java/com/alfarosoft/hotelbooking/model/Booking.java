@@ -3,43 +3,60 @@ package com.alfarosoft.hotelbooking.model;
 import com.alfarosoft.hotelbooking.model.payment.PaymentAccount;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "Booking")
 public class Booking {
     @JsonProperty("bookingId")
+    @Id
     private String bookingId;
 
     @JsonProperty("customers")
+    @Column(name = "customers")
     private List<Customer> customers;
 
     @JsonProperty("amenities")
+    @Column(name = "amenities")
     private List<Amenity> amenities;
 
     @JsonProperty("activities")
+    @Column(name = "activities")
     private List<Activity> activities;
 
     @JsonProperty("rooms")
+    @Column(name = "rooms")
     private List<Room> rooms;
 
     @JsonProperty("checkInDate")
+    @Column(name = "checkInDate")
     private LocalDate checkInDate;
 
     @JsonProperty("checkOutDate")
+    @Column(name = "checkOutDate")
     private LocalDate checkOutDate;
 
     @JsonProperty("isActive")
+    @Column(name = "isActive")
     private Boolean isActive;
 
     @JsonProperty("isPayedFor")
+    @Column(name = "isPayedFor")
     private Boolean isPayedFor;
 
     @JsonProperty("totalAmount")
+    @Column(name = "totalAmount")
     private Double totalAmount;
 
     @JsonProperty("paymentAccount")
+    @Column(name = "paymentAccount")
     private PaymentAccount paymentAccount;
 
     public Booking(String bookingId, List<Customer> customers, List<Amenity> amenities, List<Activity> activities, List<Room> rooms, LocalDate checkInDate, LocalDate checkOutDate, Boolean isActive, Boolean isPayedFor, Double totalAmount, PaymentAccount paymentAccount) {

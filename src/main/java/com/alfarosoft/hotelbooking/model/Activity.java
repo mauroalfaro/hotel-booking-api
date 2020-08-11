@@ -5,16 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class Activity {
-    @JsonProperty("customerId")
+    @JsonProperty("activityId")
     private String id;
 
     @JsonProperty("description")
     private String description;
 
     @JsonProperty("isAvailable")
-    private String isAvailable;
+    private Boolean isAvailable;
 
-    public Activity(String id, String description, String isAvailable) {
+    public Activity(String id, String description, Boolean isAvailable) {
         this.id = id;
         this.description = description;
         this.isAvailable = isAvailable;
@@ -36,11 +36,11 @@ public class Activity {
         this.description = description;
     }
 
-    public String getIsAvailable() {
+    public Boolean getIsAvailable() {
         return isAvailable;
     }
 
-    public void setIsAvailable(String isAvailable) {
+    public void setIsAvailable(Boolean isAvailable) {
         this.isAvailable = isAvailable;
     }
 

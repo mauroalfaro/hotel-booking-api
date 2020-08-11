@@ -1,6 +1,7 @@
 package com.alfarosoft.hotelbooking.service;
 
 import com.alfarosoft.hotelbooking.database.HibernateSessionFactory;
+import com.alfarosoft.hotelbooking.exception.HotelBookingException;
 import com.alfarosoft.hotelbooking.model.Booking;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -72,8 +73,7 @@ public class BookingService {
             return bookingRetrieved;
         } catch (EntityNotFoundException e){
             LOG.error("Booking not found", keyValue("bookingIdInError", bookingId));
-            //throw new HotelBookingException("Booking
-            // with id " + id + " was not found", 404);
+            throw new HotelBookingException("Booking with id " + bookingId + " was not found", 404);
         }
     }
 }

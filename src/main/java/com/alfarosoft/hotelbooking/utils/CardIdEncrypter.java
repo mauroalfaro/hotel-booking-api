@@ -4,7 +4,7 @@ public class CardIdEncrypter {
 
     //This is a basic implementation of the functionality
     //TODO implement BASE encryption for the card number
-    private String encryptCardNumber (String cardNumber){
+    public String encryptCardNumber (String cardNumber){
         String numberEncrypted;
         char[] characters = cardNumber.toCharArray();
         int random1 = (int)(Math.random() * cardNumber.length());

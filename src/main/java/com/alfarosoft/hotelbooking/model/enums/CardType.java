@@ -1,13 +1,12 @@
 package com.alfarosoft.hotelbooking.model.enums;
 
-public enum AccountStatus {
-    AVAILABLE("Available"),
-    ONDEBT ("OnDebt"),
-    FORBIDDEN("Forbidden"),
-    WITHBONIFICATION("WithBonification");
+public enum CardType {
+    CREDIT("Credit"),
+    DEBIT("Debit");
+
     private String value;
 
-    AccountStatus(String value) {
+    CardType(String value) {
         this.value = value;
     }
 

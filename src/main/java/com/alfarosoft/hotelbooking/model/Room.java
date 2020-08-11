@@ -3,19 +3,29 @@ package com.alfarosoft.hotelbooking.model;
 import com.alfarosoft.hotelbooking.model.enums.RoomQualification;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Objects;
 
+@Entity
+@Table(name = "Room")
 public class Room {
     @JsonProperty("roomNumber")
+    @Id
     private String roomNumber;
 
     @JsonProperty("capacity")
+    @Column(name = "capacity")
     private Integer capacity;
 
     @JsonProperty("roomQualification")
+    @Column(name = "roomQualification")
     private RoomQualification roomQualification;
 
     @JsonProperty("isAvailable")
+    @Column(name = "isAvailable")
     private Boolean isAvailable;
 
     public Room(String roomNumber, Integer capacity, RoomQualification roomQualification, Boolean isAvailable) {
