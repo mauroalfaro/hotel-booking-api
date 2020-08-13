@@ -1,9 +1,7 @@
 package com.alfarosoft.hotelbooking.service;
 
 import com.alfarosoft.hotelbooking.database.HibernateSessionFactory;
-import com.alfarosoft.hotelbooking.exception.CustomerException;
 import com.alfarosoft.hotelbooking.exception.RoomException;
-import com.alfarosoft.hotelbooking.model.Customer;
 import com.alfarosoft.hotelbooking.model.Room;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -13,13 +11,17 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
-import static net.logstash.logback.argument.StructuredArguments.f;
 import static net.logstash.logback.argument.StructuredArguments.keyValue;
 
 public class RoomService {
     private HibernateSessionFactory hibernateSessionFactory;
     private Session roomSession;
     private static final Logger LOG = LoggerFactory.getLogger(RoomService.class);
+
+    public RoomService(HibernateSessionFactory hibernateSessionFactory) throws Exception {
+        this.hibernateSessionFactory = hibernateSessionFactory;
+        roomSession = this.hibernateSessionFactory.buildSession();
+    }
 
     public Room occupyRoom (String roomId){
         Room roomRetrieved = retrieveRoomById(roomId);
@@ -58,4 +60,5 @@ public class RoomService {
             throw new RoomException("Room with id " + roomId + " was not found", 404);
         }
     }
+
 }

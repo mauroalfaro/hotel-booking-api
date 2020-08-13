@@ -19,6 +19,10 @@ public class Booking {
     @Id
     private String bookingId;
 
+    @JsonProperty("customerId")
+    @Column(name = "customerId")
+    private String customerId;
+
     @JsonProperty("customers")
     @Column(name = "customers")
     private List<Customer> customers;
@@ -34,6 +38,10 @@ public class Booking {
     @JsonProperty("rooms")
     @Column(name = "rooms")
     private List<Room> rooms;
+
+    @JsonProperty("dateBooked")
+    @Column(name = "dateBooked")
+    private LocalDate dateBooked;
 
     @JsonProperty("checkInDate")
     @Column(name = "checkInDate")
@@ -59,12 +67,14 @@ public class Booking {
     @Column(name = "paymentAccount")
     private PaymentAccount paymentAccount;
 
-    public Booking(String bookingId, List<Customer> customers, List<Amenity> amenities, List<Activity> activities, List<Room> rooms, LocalDate checkInDate, LocalDate checkOutDate, Boolean isActive, Boolean isPayedFor, Double totalAmount, PaymentAccount paymentAccount) {
+    public Booking(String bookingId, String customerId, List<Customer> customers, List<Amenity> amenities, List<Activity> activities, List<Room> rooms, LocalDate dateBooked, LocalDate checkInDate, LocalDate checkOutDate, Boolean isActive, Boolean isPayedFor, Double totalAmount, PaymentAccount paymentAccount) {
         this.bookingId = bookingId;
+        this.customerId = customerId;
         this.customers = customers;
         this.amenities = amenities;
         this.activities = activities;
         this.rooms = rooms;
+        this.dateBooked = dateBooked;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.isActive = isActive;
@@ -161,6 +171,22 @@ public class Booking {
         this.paymentAccount = paymentAccount;
     }
 
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public LocalDate getDateBooked() {
+        return dateBooked;
+    }
+
+    public void setDateBooked(LocalDate dateBooked) {
+        this.dateBooked = dateBooked;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -200,4 +226,6 @@ public class Booking {
                 ", paymentAccount=" + paymentAccount +
                 '}';
     }
+
+
 }

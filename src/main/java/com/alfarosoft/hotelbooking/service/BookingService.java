@@ -3,15 +3,14 @@ package com.alfarosoft.hotelbooking.service;
 import com.alfarosoft.hotelbooking.database.HibernateSessionFactory;
 import com.alfarosoft.hotelbooking.exception.HotelBookingException;
 import com.alfarosoft.hotelbooking.model.Booking;
+import com.alfarosoft.hotelbooking.model.Room;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityNotFoundException;
-import java.awt.print.Book;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static net.logstash.logback.argument.StructuredArguments.keyValue;
@@ -19,22 +18,35 @@ import static net.logstash.logback.argument.StructuredArguments.keyValue;
 public class BookingService {
     private HibernateSessionFactory hibernateSessionFactory;
     private Session bookingSession;
+    private RoomService roomService;
     private static final Logger LOG = LoggerFactory.getLogger(BookingService.class);
 
-    public BookingService(HibernateSessionFactory hibernateSessionFactory) throws Exception {
+    public BookingService(HibernateSessionFactory hibernateSessionFactory, RoomService roomService) throws Exception {
         this.hibernateSessionFactory = hibernateSessionFactory;
         bookingSession = hibernateSessionFactory.buildSession();
+        this.roomService = roomService;
     }
 
     public Booking addBooking (Booking booking) {
         bookingSession.beginTransaction();
+        for(Room room : booking.getRooms()){
+            List<Room> roomsAvailable = roomService.getAvailableRoomsWithCapacity(room.getCapacity());
+            if (roomsAvailable == null || roomsAvailable.isEmpty()){
+                throw new HotelBookingException("Room not available with capacity of " + room.getCapacity(), 400);
+            }
+            else {
+                for (Room roomAvailable : roomsAvailable){
+                    roomService.occupyRoom(roomAvailable.getRoomNumber());
+                }
+            }
+        }
         bookingSession.save(booking);
         bookingSession.getTransaction().commit();
         LOG.info("Booking created");
         return booking;
     }
 
-    public Booking checkingBooking (String bookingId){
+    public Booking checkInBooking (String bookingId){
         Booking bookingRetrieved = retrieveBookingById(bookingId);
         bookingRetrieved.setCheckInDate(LocalDate.now());
         bookingRetrieved.setActive(true);
@@ -44,10 +56,11 @@ public class BookingService {
         return bookingRetrieved;
     }
 
-    public Booking checkoutBooking (String bookingId){
+    public Booking checkOutBooking (String bookingId){
         Booking bookingRetrieved = retrieveBookingById(bookingId);
         bookingRetrieved.setCheckOutDate(LocalDate.now());
         bookingRetrieved.setActive(false);
+        bookingRetrieved.setPayedFor(true);
         bookingSession.save(bookingRetrieved);
         bookingSession.getTransaction().commit();
         LOG.info("Booking succesfully checked out");
@@ -62,7 +75,7 @@ public class BookingService {
         return bookings;
     }
 
-    private Booking retrieveBookingById (String bookingId){
+    public Booking retrieveBookingById (String bookingId){
         Booking bookingRetrieved;
         try{
             bookingSession.beginTransaction();
@@ -74,6 +87,73 @@ public class BookingService {
         } catch (EntityNotFoundException e){
             LOG.error("Booking not found", keyValue("bookingIdInError", bookingId));
             throw new HotelBookingException("Booking with id " + bookingId + " was not found", 404);
+        }
+    }
+
+    public List<Booking> retrieveBookingsByCustomerId (String customerId){
+        List<Booking> bookingsRetrieved;
+        try{
+            bookingSession.beginTransaction();
+            Query selectQuery = bookingSession.createQuery("from Booking WHERE customerId=:customerId");
+            selectQuery.setParameter("customerId", customerId);
+            bookingsRetrieved = (List<Booking>) selectQuery.list();
+            LOG.info("Bookings retrieved for customer " + customerId, keyValue("bookingRetrieved" , bookingsRetrieved));
+            return bookingsRetrieved;
+        } catch (EntityNotFoundException e){
+            LOG.error("Bookings not found for customer", keyValue("customerIdInError", customerId));
+            throw new HotelBookingException("Bookings not found for customerId " + customerId, 404);
+        }
+    }
+
+    public List<Booking> retrieveBookingsByCheckInDate (LocalDate checkInDate){
+        List<Booking> bookingsRetrieved;
+        try{
+            bookingSession.beginTransaction();
+            Query selectQuery = bookingSession.createQuery("from Booking WHERE checkInDate=:checkInDate");
+            selectQuery.setParameter("checkInDate", checkInDate);
+            bookingsRetrieved = (List<Booking>) selectQuery.list();
+            return bookingsRetrieved;
+        } catch (EntityNotFoundException e){
+            LOG.error("Bookings not found with checkInDate", keyValue("checkInDate", checkInDate.toString()));
+            throw new HotelBookingException("Bookings not found with checkInDate " + checkInDate.toString(), 404);
+        }
+    }
+
+    public List<Booking> retrieveBookingsByCheckOutDate (LocalDate checkOutDate){
+        List<Booking> bookingsRetrieved;
+        try{
+            bookingSession.beginTransaction();
+            Query selectQuery = bookingSession.createQuery("from Booking WHERE checkOutDate=:checkOutDate");
+            selectQuery.setParameter("checkOutDate", checkOutDate);
+            bookingsRetrieved = (List<Booking>) selectQuery.list();
+            return bookingsRetrieved;
+        } catch (EntityNotFoundException e){
+            LOG.error("Bookings not found with checkOutDate", keyValue("checkOutDate", checkOutDate.toString()));
+            throw new HotelBookingException("Bookings not found with checkOutDate " + checkOutDate.toString(), 404);
+        }
+    }
+
+    public List<Booking> retrieveActiveBookings(){
+        List<Booking> bookingsRetrieved;
+        try{
+            bookingSession.beginTransaction();
+            bookingsRetrieved = bookingSession.createQuery("from Booking WHERE isActive=true").list();
+            return bookingsRetrieved;
+        } catch (EntityNotFoundException e){
+            LOG.error("Active bookings not found");
+            throw new HotelBookingException("Active bookings not found", 404);
+        }
+    }
+
+    public List<Booking> retrieveUnactiveBookings(){
+        List<Booking> bookingsRetrieved;
+        try{
+            bookingSession.beginTransaction();
+            bookingsRetrieved = bookingSession.createQuery("from Booking WHERE isActive=false").list();
+            return bookingsRetrieved;
+        } catch (EntityNotFoundException e){
+            LOG.error("Unactive bookings not found");
+            throw new HotelBookingException("Unactive bookings not found", 404);
         }
     }
 }
