@@ -2,6 +2,7 @@ package com.alfarosoft.hotelbooking.service;
 
 import com.alfarosoft.hotelbooking.database.HibernateSessionFactory;
 import com.alfarosoft.hotelbooking.exception.HotelBookingException;
+import com.alfarosoft.hotelbooking.exception.RoomException;
 import com.alfarosoft.hotelbooking.model.Booking;
 import com.alfarosoft.hotelbooking.model.Room;
 import org.hibernate.Session;
@@ -32,7 +33,7 @@ public class BookingService {
         for(Room room : booking.getRooms()){
             List<Room> roomsAvailable = roomService.getAvailableRoomsWithCapacity(room.getCapacity());
             if (roomsAvailable == null || roomsAvailable.isEmpty()){
-                throw new HotelBookingException("Room not available with capacity of " + room.getCapacity(), 400);
+                throw new RoomException("Room not available with capacity of " + room.getCapacity(), 400);
             }
             else {
                 for (Room roomAvailable : roomsAvailable){
