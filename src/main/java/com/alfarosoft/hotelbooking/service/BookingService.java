@@ -5,6 +5,7 @@ import com.alfarosoft.hotelbooking.exception.HotelBookingException;
 import com.alfarosoft.hotelbooking.exception.RoomException;
 import com.alfarosoft.hotelbooking.model.Booking;
 import com.alfarosoft.hotelbooking.model.Room;
+import com.alfarosoft.hotelbooking.model.enums.AccountStatus;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
@@ -20,31 +21,43 @@ public class BookingService {
     private HibernateSessionFactory hibernateSessionFactory;
     private Session bookingSession;
     private RoomService roomService;
+    private PaymentAccountService paymentAccountService;
     private static final Logger LOG = LoggerFactory.getLogger(BookingService.class);
 
-    public BookingService(HibernateSessionFactory hibernateSessionFactory, RoomService roomService) throws Exception {
+    public BookingService(HibernateSessionFactory hibernateSessionFactory, RoomService roomService, PaymentAccountService paymentAccountService) throws Exception {
         this.hibernateSessionFactory = hibernateSessionFactory;
         bookingSession = hibernateSessionFactory.buildSession();
         this.roomService = roomService;
+        this.paymentAccountService = paymentAccountService;
     }
 
     public Booking addBooking (Booking booking) {
-        bookingSession.beginTransaction();
-        for(Room room : booking.getRooms()){
-            List<Room> roomsAvailable = roomService.getAvailableRoomsWithCapacity(room.getCapacity());
-            if (roomsAvailable == null || roomsAvailable.isEmpty()){
-                throw new RoomException("Room not available with capacity of " + room.getCapacity(), 400);
-            }
-            else {
-                for (Room roomAvailable : roomsAvailable){
-                    roomService.occupyRoom(roomAvailable.getRoomNumber());
+        AccountStatus accountStatus;
+        if(booking.getPaymentAccount().getPaymentAccountId() == null){
+            accountStatus = paymentAccountService.createNewPaymentAccount(booking).getAccountStatus();
+        } else {
+            accountStatus = paymentAccountService.checkAccountStatus(booking.getPaymentAccount().getPaymentAccountId());
+        }
+        if(accountStatus.toString().equals("Available")){
+            bookingSession.beginTransaction();
+            paymentAccountService.checkAccountStatus(booking.getPaymentAccount().getPaymentAccountId());
+            for(Room room : booking.getRooms()){
+                List<Room> roomsAvailable = roomService.getAvailableRoomsWithCapacity(room.getCapacity());
+                if (roomsAvailable == null || roomsAvailable.isEmpty()){
+                    throw new RoomException("Room not available with capacity of " + room.getCapacity(), 400);
+                }
+                else {
+                    for (Room roomAvailable : roomsAvailable){
+                        roomService.occupyRoom(roomAvailable.getRoomNumber());
+                    }
                 }
             }
+            bookingSession.save(booking);
+            bookingSession.getTransaction().commit();
+            LOG.info("Booking created");
+            return booking;
         }
-        bookingSession.save(booking);
-        bookingSession.getTransaction().commit();
-        LOG.info("Booking created");
-        return booking;
+        if (accountStatus.toString().equals("Forbidden") !!)
     }
 
     public Booking checkInBooking (String bookingId){
@@ -61,6 +74,7 @@ public class BookingService {
         Booking bookingRetrieved = retrieveBookingById(bookingId);
         bookingRetrieved.setCheckOutDate(LocalDate.now());
         bookingRetrieved.setActive(false);
+        paymentAccountService.registerPayment(bookingRetrieved);
         bookingRetrieved.setPayedFor(true);
         bookingSession.save(bookingRetrieved);
         bookingSession.getTransaction().commit();

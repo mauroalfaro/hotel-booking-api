@@ -1,10 +1,7 @@
 package com.alfarosoft.hotelbooking.configuration;
 
 import com.alfarosoft.hotelbooking.database.HibernateSessionFactory;
-import com.alfarosoft.hotelbooking.service.BookingService;
-import com.alfarosoft.hotelbooking.service.CardEncrypterService;
-import com.alfarosoft.hotelbooking.service.CustomerService;
-import com.alfarosoft.hotelbooking.service.RoomService;
+import com.alfarosoft.hotelbooking.service.*;
 import com.alfarosoft.hotelbooking.utils.CardIdEncrypter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +18,7 @@ public class HotelBookingConfiguration {
     @Bean
     @RequestScope
     public BookingService bookingService() throws Exception {
-        return new BookingService(hibernateSessionFactory(), roomService());
+        return new BookingService(hibernateSessionFactory(), roomService(), paymentAccountService());
     }
 
     @Bean
@@ -34,6 +31,13 @@ public class HotelBookingConfiguration {
     @RequestScope
     public RoomService roomService() throws Exception {
         return new RoomService(hibernateSessionFactory());
+    }
+
+
+    @Bean
+    @RequestScope
+    public PaymentAccountService paymentAccountService() throws Exception {
+        return new PaymentAccountService(hibernateSessionFactory());
     }
 
     @Bean
