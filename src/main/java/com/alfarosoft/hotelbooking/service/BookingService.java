@@ -57,7 +57,8 @@ public class BookingService {
             LOG.info("Booking created");
             return booking;
         }
-        if (accountStatus.toString().equals("Forbidden") !!)
+        return null;
+        //if (accountStatus.toString().equals("Forbidden") !!)
     }
 
     public Booking checkInBooking (String bookingId){

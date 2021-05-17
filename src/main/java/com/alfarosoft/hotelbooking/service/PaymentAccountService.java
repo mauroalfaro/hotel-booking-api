@@ -35,7 +35,7 @@ public class PaymentAccountService {
     }
 
     public PaymentAccount registerPayment (Booking booking){
-
+        return null;
     }
 
     private PaymentAccount retrievePaymentAccountById (String paymentAccountId){
@@ -54,6 +54,6 @@ public class PaymentAccountService {
     }
 
     public PaymentAccount createNewPaymentAccount(Booking booking){
-        
+        return null;
     }
 }
